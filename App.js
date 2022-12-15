@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import Tile from './components/Tile';
+
 export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.playground}>
-        <Text>Snake</Text>
+        <Tile />
       </View>
     </View>
   );
