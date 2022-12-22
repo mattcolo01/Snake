@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Navigation from './components/navigation';
-
+import Navigation from './components/Navigation';
 import Tile from './components/Tile';
 
 export default class App extends React.Component {
@@ -9,48 +8,103 @@ export default class App extends React.Component {
     super(props);
     let t=new Array();
     let help=0;
-    for(let i=0; i<30; i++) {
-      t[i]=new Array();
-      for(let j=0; j<30; j++) {
-        t[i][j]={
+    for(let y=0; y<30; y++) {
+      t[y]=new Array();
+      for(let x=0; x<30; x++) {
+        t[y][x]={
           num: help++,
-          val: null,
+          x: x,
+          y: y,
         }
       }
     }
 
-    t[15][15].val=-1;
-
-    //Stato:
-    //- tiles: matrice degli stati delle singole caselle, per ora contiene l'indice ma sarà da popolare con (anche) cosa c'è dentro
     this.state={
       tiles: t,
-      snakeDirection: 2,
+      snakeDirection: null,
+      gameOver: false,
+      snake: [{ x: 15, y: 15 }],
+      food: { x: 10, y: 15 },
     }
     //console.log(this.state.tiles);
     this.toggleDirection=this.toggleDirection.bind(this);
   }
 
   toggleDirection(dir){
-    if(dir !== -this.state.snakeDirection)
-      this.setState(
-        {snakeDirection: dir,},
-        () => {console.log(this.state.snakeDirection)}
-      );
-    this.movement();
+    if(!this.state.gameOver) {
+      if(dir !== -this.state.snakeDirection)
+        this.setState(
+          {snakeDirection: dir,},
+          () => {console.log(this.state.snakeDirection)}
+        );
+      this.movement();
+    }
   }
 
   movement() {
-    setInterval( () => {
-      let temp=this.state.tiles;
-      temp[Math.floor(Math.random()*30)][Math.floor(Math.random()*30)].val = 1;
-      this.setState({tiles: temp,});
+    var tick=setInterval( () => {
+      let newX,newY;
+      switch(this.state.snakeDirection) {
+        case -1:
+          newY = this.state.snake[0].y;
+          newX = (this.state.snake[0].x)-1;
+          break;
+        case 1:
+          newY = this.state.snake[0].y;
+          newX = (this.state.snake[0].x)+1;
+          break;
+        case -2:
+          newY = (this.state.snake[0].y)+1;
+          newX = this.state.snake[0].x;
+          break;
+        case 2:
+          newY = (this.state.snake[0].y)-1;
+          newX = this.state.snake[0].x;
+          break;
+      };
+      this.snakePosition(newX,newY);
+      //console.log(newX+" "+newY);
+      if(this.state.gameOver) clearInterval(tick);
     }, 1000)
+  }
+
+  snakePosition(x,y){
+    let snake = [];
+    if( x<0 || y<0 || x>29 || y>29 || this.hasSnake(x,y) ) this.setState({gameOver: true,});
+    else if(this.getFood(x,y,true)) {
+      snake= [{ x: x, y: y }].concat(this.state.snake.slice());
+    } else {
+      snake= [{ x: x, y: y }].concat( this.state.snake.slice(0, this.state.snake.length-1));
+    }
+    this.setState({snake: snake, });
+  }
+
+  hasSnake(x,y){
+    for(let i=0; i<this.state.snake.length; i++) {
+      if(this.state.snake[i].x==x && this.state.snake[i].y==y)
+        return true;
+    }
+    return false;
+  }
+
+  getFood(x,y,eat){
+    if(this.state.food.x == x && this.state.food.y == y) {
+      let tx, ty;
+      if(eat){
+        do {
+          tx=Math.floor(Math.random()*30);
+          ty=Math.floor(Math.random()*30);
+        } while (this.hasSnake(tx,ty));
+        this.setState({ food: { x: tx, y: ty } });
+      }
+      return true;
+    } else return false;
   }
 
   render(){
     return (
       <View style={styles.container}>
+        {this.state.gameOver? <Text>Game Over</Text> : null /*magari usare un modal */} 
         <View style={styles.playground}>
           {this.state.tiles.map( (arr) => {
             return (
@@ -59,7 +113,12 @@ export default class App extends React.Component {
                   //console.log(arr)
                   arr.map( (item) => {
                     //console.log(item);
-                    return (<Tile content={item.val} key={item.num} />);
+                    return (<Tile content={
+                      this.hasSnake(item.x, item.y) ?
+                        "snake" :
+                          this.getFood(item.x,item.y) ?
+                            "food" : null
+                      } key={item.num} />);
                   })
                 }
               </View>

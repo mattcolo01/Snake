@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 // classe Tile
 // Renderizza una casella che può contenere un segmento di serpente, del cibo, o essere vuota
 // Props:
-// - content: null o 0 se è vuota, un numero maggiore di 0 se c'è il serpente, minore di zero se c'è cibo
+// - content: "head" per rappresentare la testa del serpente, "snake" per il corpo, "food" per il cibo, null se è vuota
 
 export default class Tile extends React.Component{
     constructor (props) {
@@ -13,9 +13,9 @@ export default class Tile extends React.Component{
     render(){
         return(
             <View style={
-                this.props.content > 0?
+                this.props.content == 'snake' ?
                 tile.snake :
-                    this.props.content < 0 ?
+                    this.props.content == 'food' ?
                     tile.food : tile.empty
             }>
                 <Text></Text>
@@ -29,7 +29,7 @@ const tile=StyleSheet.create({
         width: 10,
         heigth: 10,
         aspectRatio: 1,
-        backgroundColor: 'red',
+        backgroundColor: 'blue',
         borderRadius: 5,
     },
     empty: {
@@ -42,7 +42,7 @@ const tile=StyleSheet.create({
         width: 10,
         heigth: 10,
         aspectRatio: 1,
-        backgroundColor: 'blue',
+        backgroundColor: 'red',
         borderRadius: 5,
     },
 })

@@ -1,13 +1,11 @@
 {
   "expo": {
-    "name": "Applicazione",
+    "name": "Snake minimal",
     "slug": "Applicazione",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,12 +20,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.matt2colo.snakeminimal"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4187bbb7-af4a-48ea-8d49-552bfeafe220"
+      }
     }
   }
 }
