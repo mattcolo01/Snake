@@ -29,8 +29,9 @@ const tile=StyleSheet.create({
         width: 10,
         heigth: 10,
         aspectRatio: 1,
-        backgroundColor: 'blue',
+        backgroundColor: 'grey',
         borderRadius: 5,
+        margin: 0,
     },
     empty: {
         width: 10,
@@ -42,7 +43,7 @@ const tile=StyleSheet.create({
         width: 10,
         heigth: 10,
         aspectRatio: 1,
-        backgroundColor: 'red',
+        backgroundColor: 'brown',
         borderRadius: 5,
     },
 })

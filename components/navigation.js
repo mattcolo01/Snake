@@ -7,10 +7,18 @@ export default class Navigation extends React.Component {
     render(){
         return (
             <View style={styles.container}>
-                <Button title="←" onPress={this.props.dirChange.bind(this, -1)}/>
-                <Button title="→" onPress={this.props.dirChange.bind(this, 1)}/>
-                <Button title="↑" onPress={this.props.dirChange.bind(this, 2)}/>
-                <Button title="↓" onPress={this.props.dirChange.bind(this, -2)}/>
+                <View style={styles.button} >
+                    <Button title="←" onPress={this.props.dirChange.bind(this, -1)}/>
+                </View>
+                <View style={styles.button} >
+                    <Button title="→" onPress={this.props.dirChange.bind(this, 1)}/>
+                </View>
+                <View style={styles.button} >
+                    <Button title="↑" onPress={this.props.dirChange.bind(this, 2)}/>
+                </View>
+                <View style={styles.button} >
+                    <Button title="↓" onPress={this.props.dirChange.bind(this, -2)}/>
+                </View>
             </View>
         );
     }
@@ -21,4 +29,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         margin: 10,
     },
+    button: {
+        padding: 5,
+        aspectRatio: 1,
+        textAlign: "center",
+    }
 });

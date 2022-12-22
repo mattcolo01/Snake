@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Navigation from './components/Navigation';
 import Tile from './components/Tile';
+import GameOver from './components/GameOver';
 
 export default class App extends React.Component {
   constructor(props){
@@ -25,8 +26,8 @@ export default class App extends React.Component {
       gameOver: false,
       snake: [{ x: 15, y: 15 }],
       food: { x: 10, y: 15 },
+      moving: false,
     }
-    //console.log(this.state.tiles);
     this.toggleDirection=this.toggleDirection.bind(this);
   }
 
@@ -34,10 +35,13 @@ export default class App extends React.Component {
     if(!this.state.gameOver) {
       if(dir !== -this.state.snakeDirection)
         this.setState(
-          {snakeDirection: dir,},
-          () => {console.log(this.state.snakeDirection)}
+          {snakeDirection: dir,} // , funzione da eseguire una volta aggiornato
         );
-      this.movement();
+      
+      if(!this.state.moving){     //chiama movement solo la prima volta
+        this.setState({moving:true,});
+        this.movement();
+      }
     }
   }
 
@@ -63,9 +67,8 @@ export default class App extends React.Component {
           break;
       };
       this.snakePosition(newX,newY);
-      //console.log(newX+" "+newY);
       if(this.state.gameOver) clearInterval(tick);
-    }, 1000)
+    }, 800);
   }
 
   snakePosition(x,y){
@@ -101,18 +104,30 @@ export default class App extends React.Component {
     } else return false;
   }
 
+  restart(){
+    this.setState({
+      snakeDirection: null,
+      gameOver: false,
+      snake: [{ x: 15, y: 15 }],
+      food: { x: 10, y: 15 },
+      moving: false,
+    });
+  }
+
   render(){
     return (
       <View style={styles.container}>
-        {this.state.gameOver? <Text>Game Over</Text> : null /*magari usare un modal */} 
+        <GameOver
+          visible={this.state.gameOver}
+          onRestart={ () =>{
+            this.restart();
+          } }/>
         <View style={styles.playground}>
           {this.state.tiles.map( (arr) => {
             return (
               <View key={arr[0].num} style={styles.row} >
                 {
-                  //console.log(arr)
                   arr.map( (item) => {
-                    //console.log(item);
                     return (<Tile content={
                       this.hasSnake(item.x, item.y) ?
                         "snake" :
