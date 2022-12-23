@@ -1,6 +1,9 @@
 import React from 'react';
 import { Modal, Text, View, Button, StyleSheet } from 'react-native';
 
+//Schermata di game over, contiene il relativo avviso e un pulsante per ripartire da capo. Props:
+//-onRestart: azioni da eseguire quando viene premuto il pulsante "restart"
+//-visible: boolean che mostra o nasconde la schermata
 class GameOver extends React.Component {
     constructor (props){
         super(props);

@@ -1,7 +1,10 @@
 import React from "react";
 import { Button, View, StyleSheet } from "react-native";
 
-
+//Warning: deprecated
+//Use third-party library "GestureRecognizer" instead
+//Renderizza quattro bottoni per cambiare direzione. Props:
+//-dirChange: azioni da eseguire quando viene premuto un qualsiasi pulsante (che invia come parametro la direzione ad esso assegnata)
 export default class Navigation extends React.Component {
 
     render(){
@@ -32,6 +35,5 @@ const styles = StyleSheet.create({
     button: {
         padding: 5,
         aspectRatio: 1,
-        textAlign: "center",
     }
 });
