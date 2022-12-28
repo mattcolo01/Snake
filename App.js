@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Navigation from './components/Navigation';
+import { hasSnake } from './components/Varie';
 import Tile from './components/Tile';
 import GameOver from './components/GameOver';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-detect';
@@ -28,7 +28,7 @@ export default class App extends React.Component {
       gameOver: false,  //what else
       snake: [{ x: 15, y: 15 }],    //vettore dei segmenti del serpente, ognuno contenente le proprie coordinate
       food: { x: 10, y: 15 },   //coordinate dellaq casella contenente cibo
-      moving: false,  //what else
+      //moving: false,
       tick: null,   //per fermare e far partire il timer
       moved: true,  //dice se il serpente si è mosso dopo l'ultimo cambio di direzione (serve per cambiare una sola direzione alla volta)
     }
@@ -38,19 +38,14 @@ export default class App extends React.Component {
 
   //metodo richiamato quando l'utente cambia direzione, prima controlla se la direzione ricevuta è consentita e poi richiama il metodo per il movimento
   toggleDirection(dir){
-    if(this.state.moved){
-      if(!this.state.gameOver) {
-        if(dir !== -this.state.snakeDirection) {
-          this.setState({moved:false});
-          this.setState(
-            {snakeDirection: dir,} // , funzione da eseguire una volta aggiornato
-          );
-        }
-        if(!this.state.moving){     //chiama movement solo la prima volta
-          this.setState({moving:true,});
-          this.movement();
-        }
+    if(this.state.moved && !this.state.gameOver) {
+      if(dir !== -this.state.snakeDirection) {
+        this.setState({moved:false});
+        this.setState(
+          {snakeDirection: dir,} // , funzione da eseguire una volta aggiornato
+        );
       }
+      this.movement();
     }
   }
 
@@ -80,29 +75,20 @@ export default class App extends React.Component {
         };
         this.snakePosition(newX,newY);  //comunica le nuove coordinate per riposizionare il serpente
         if(this.state.gameOver) clearInterval(this.state.tick); //se l'utente perde fermo il movimento
-      }, Math.max(300,1000-30*this.state.snake.length)), //a ogni cambio di direzione viene aumentata la velocità in base allo stato di avanzamento del gioco (quindi alla lunghezza del serpente)
+      }, Math.max(300,1000-30*this.state.snake.length )), //a ogni cambio di direzione viene aumentata la velocità in base allo stato di avanzamento del gioco (quindi alla lunghezza del serpente)
     });
   }
 
   //metodo per riposizionare il serpente, riceve le coordinate della nuova casella
   snakePosition(x,y){
     let snake = [];
-    if( x<0 || y<0 || x>29 || y>29 || this.hasSnake(x,y) ) this.setState({gameOver: true,}); //se la nuova casella è oltre il bordo o se il serpente si mangia la coda dichiara game over, che femerà il tick
+    if( x<0 || y<0 || x>29 || y>29 || hasSnake(x,y,this.state.snake) ) this.setState({gameOver: true,}); //se la nuova casella è oltre il bordo o se il serpente si mangia la coda dichiara game over, che femerà il tick
     else if(this.getFood(x,y,true)) {
       snake= [{ x: x, y: y }].concat(this.state.snake.slice()); //se la nuova casella contiene cibo la aggiunge semplicemente al vettore serpente (in testa), che si allungherà di 1
     } else {
       snake= [{ x: x, y: y }].concat( this.state.snake.slice(0, this.state.snake.length-1)); //se la casella è vuota la aggiunge in testa al serpente ma toglie l'ultima, in modo che il serpente paia spostarsi ma senza allungarsi
     }
     this.setState({snake: snake, moved: true});
-  }
-
-  //metodo per controllare se una data casella (coordinate come parametri) contiene un segmento di serpente
-  hasSnake(x,y){
-    for(let i=0; i<this.state.snake.length; i++) {
-      if(this.state.snake[i].x==x && this.state.snake[i].y==y)
-        return true;
-    }
-    return false;
   }
 
   //metodo per controllare se una data casella (parametri x e y) contiene cibo e, eventualmente, mangiarlo
@@ -114,7 +100,7 @@ export default class App extends React.Component {
         do {
           tx=Math.floor(Math.random()*30);
           ty=Math.floor(Math.random()*30);
-        } while (this.hasSnake(tx,ty));
+        } while (hasSnake(tx,ty,this.state.snake));
         this.setState({ food: { x: tx, y: ty } });  //se la casella coneneva cibo e verrà mangiato, devo spawnare cibo in una nuova casella (randomica), controllando che già non ci sia il serpente
       }
       return true;
@@ -128,7 +114,7 @@ export default class App extends React.Component {
       gameOver: false,
       snake: [{ x: 15, y: 15 }],
       food: { x: 10, y: 15 },
-      moving: false,
+      //moving: false,
     });
   }
 
@@ -152,7 +138,7 @@ export default class App extends React.Component {
                   {
                     arr.map( (item) => {
                       return (<Tile content={
-                        this.hasSnake(item.x,item.y) ?
+                        hasSnake(item.x,item.y,this.state.snake) ?
                           "snake" :
                             this.getFood(item.x,item.y) ?
                               "food" : null
@@ -177,18 +163,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   playground: {
-    width: 304,
-    height: 304,
+    width: 305,
+    /* height: 319, */
     borderWidth: 2,
     borderColor: 'green',
     alignItems: 'center',
     flexDirection: 'column',
+    padding: 0,
   },
   row: {
-    width: 300,
-    height: 10,
+    width: "100%",
+    height: 10.5,
     flexDirection: 'row',
+    margin: 0,
+    padding: 0,
   }
 });
-
-//TO DO: sistemare un po' lo styling (in tutte le classi)

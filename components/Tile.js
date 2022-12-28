@@ -38,6 +38,7 @@ const tile=StyleSheet.create({
         heigth: 10,
         aspectRatio: 1,
         backgroundColor: 'white',
+        margin: 0,
     },
     food: {
         width: 10,
@@ -45,5 +46,6 @@ const tile=StyleSheet.create({
         aspectRatio: 1,
         backgroundColor: 'brown',
         borderRadius: 5,
+        margin: 0,
     },
 })
