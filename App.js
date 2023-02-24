@@ -75,7 +75,7 @@ export default class App extends React.Component {
         };
         this.snakePosition(newX,newY);  //comunica le nuove coordinate per riposizionare il serpente
         if(this.state.gameOver) clearInterval(this.state.tick); //se l'utente perde fermo il movimento
-      }, Math.max(300,1000-30*this.state.snake.length )), //a ogni cambio di direzione viene aumentata la velocità in base allo stato di avanzamento del gioco (quindi alla lunghezza del serpente)
+      }, Math.max(200,700-10*this.state.snake.length )), //a ogni cambio di direzione viene aumentata la velocità in base allo stato di avanzamento del gioco (quindi alla lunghezza del serpente)
     });
   }
 
